@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+
+{% extends "shops/base.html" %}
+{% block content %}
+{% load static %}
+
+    <head>
+        <meta charset="utf-8">
+        <title>Nearby Shops</title>
+    </head>
+
+    <body>
+        <h1>Nearby Shops</h1>
+        {% if shops %}
+        <ul>
+            {% for shop in shops %}
+            <li>
+                {{ shop.name }} : {{shop.distance}}
+            </li>
+            {% endfor %}
+        </ul>
+        {% endif %}
+
+        {% block content %}
+            <div class="feeds">
+                {% for result in results %}
+                    <h3> {{ result.name }}</h3>
+                    <br>
+                    Distance:{{ result.location }}
+                    <br>
+                    <p id="{{ result.id }}">
+                            {{ result.body }}
+                    </p>
+                {% endfor %}
+            </div>
+        {% endblock %}
+    </body>
+
+{% endblock %}
+
+</html>

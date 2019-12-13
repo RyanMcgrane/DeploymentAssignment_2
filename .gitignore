@@ -127,3 +127,4 @@ dmypy.json
 
 # Pyre type checker
 .pyre/
+youtube_test/youtube_test/secrets.py

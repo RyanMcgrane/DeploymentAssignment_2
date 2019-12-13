@@ -1,0 +1,2230 @@
+<!DOCTYPE html>
+<html>
+{% load static %}
+{% load leaflet_tags %}
+    <head>
+        {% leaflet_js %}
+        {% leaflet_css %}
+        <title> Assignment One: Demonstration</title>
+        <style type="text/css">
+            #gis { margin-left:10%; width: 80%; height: 800px;}
+            h1{text-align: center}
+            button{ margin-left: 45%;}
+        </style>
+
+        <link rel ="stylesheet" type="text/css" href="{% static 'leaflet-groupedlayercontrol-gh-pages/src/leaflet.groupedlayercontrol.css'  %}">
+        <script type="text/javascript" src="{% static 'dist/leaflet.ajax.js' %}"> </script>
+        <script type="text/javascript" src="{% static 'leaflet-groupedlayercontrol-gh-pages/src/leaflet.groupedlayercontrol.js' %}"> </script>
+    </head>
+
+    <body>
+        <h1> Welcome to your frontend for the assignment </h1>
+        <br>
+        <script type="text/javascript">
+            function our_layers(map,options)
+            {
+                var osm = L.tileLayer('http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png');
+
+               // var svg = 'location.svg'
+               // var iconUrl = 'data:image/svg+xml;base64,' + btoa(svg);
+
+                var blackIcon = L.icon({
+                    iconUrl: 'location.svg',
+                    iconSize: [32, 37],
+                    iconAnchor: [16, 37],
+                    popupAnchor: [0, -30]
+                });
+
+                var popup = L.popup();
+
+
+                L.marker([53.36365, -6.35353],{icon: blackIcon}).addTo(map).bindPopup("I'm a black marker");
+                L.marker([55.36365, -4.35353],{icon: blackIcon}).addTo(map);
+
+                L.marker([53.36365, -6.35353]).addTo(map);
+
+
+                var datasets = new L.GeoJSON.AJAX("{% url 'county' %}",
+                {
+                    style: function colors(feature)
+                    {
+                        switch(feature.properties.name_tag)
+                        {
+                            case 'Dublin':
+                                return{
+                                color: 'orange'
+                            };
+                            break
+
+                            case 'Kildare':
+                                return{
+                                color: 'green'
+                            };
+                            break;
+                        }
+                    },
+
+                    onEachFeature: function(feature,layer){
+                        layer.bindPopup(feature.properties.name_tag.toString());
+                    }
+                });
+
+                var points = new L.GeoJSON.AJAX("{% url 'incidences' %}",
+                {
+
+                    onEachFeature: function(feature,layer)
+                    {
+                        layer.bindPopup(feature.properties.name.toString());
+                    }
+                });
+
+                datasets.addTo(map);
+                points.addTo(map);
+
+                var baseLayers = {
+                    "OSM": osm
+                }
+
+                var groupedOverlays = {
+                  "Layers": {
+                    "counties": datasets,
+                    "incidences": points
+                  },
+                };
+
+                L.control.groupedLayers(baseLayers, groupedOverlays).addTo(map);
+
+                geojson = {
+                  "type": "FeatureCollection",
+                  "generator": "overpass-ide",
+                  "copyright": "The data included in this document is from www.openstreetmap.org. The data is made available under ODbL.",
+                  "timestamp": "2019-11-04T16:37:02Z",
+                  "features": [
+                    {
+                      "type": "Feature",
+                      "properties": {
+                        "@id": "relation/3630034",
+                        "addr:city": "Dublin",
+                        "addr:housenumber": "15-19",
+                        "addr:street": "Grafton Street",
+                        "brand": "Marks & Spencer",
+                        "brand:wikidata": "Q714491",
+                        "brand:wikipedia": "en:Marks & Spencer",
+                        "building": "yes",
+                        "fixme": "Buildings need to be split",
+                        "name": "Marks & Spencer",
+                        "shop": "department_store",
+                        "type": "multipolygon"
+                      },
+                      "geometry": {
+                        "type": "Polygon",
+                        "coordinates": [
+                          [
+                            [
+                              -6.2596152,
+                              53.3423495
+                            ],
+                            [
+                              -6.2596231,
+                              53.3423506
+                            ],
+                            [
+                              -6.2598022,
+                              53.3420706
+                            ],
+                            [
+                              -6.2596634,
+                              53.3420598
+                            ],
+                            [
+                              -6.2595198,
+                              53.3420476
+                            ],
+                            [
+                              -6.259411,
+                              53.3420383
+                            ],
+                            [
+                              -6.259324,
+                              53.3420309
+                            ],
+                            [
+                              -6.2592393,
+                              53.3420236
+                            ],
+                            [
+                              -6.259179,
+                              53.3420185
+                            ],
+                            [
+                              -6.2591739,
+                              53.3420375
+                            ],
+                            [
+                              -6.2591343,
+                              53.3420332
+                            ],
+                            [
+                              -6.2590471,
+                              53.3420249
+                            ],
+                            [
+                              -6.2589372,
+                              53.3420188
+                            ],
+                            [
+                              -6.2588563,
+                              53.3422538
+                            ],
+                            [
+                              -6.2589656,
+                              53.3422601
+                            ],
+                            [
+                              -6.2593803,
+                              53.3423171
+                            ],
+                            [
+                              -6.2596152,
+                              53.3423495
+                            ]
+                          ]
+                        ]
+                      },
+                      "id": "relation/3630034"
+                    },
+                      {
+                      "type": "Feature",
+                      "properties": {
+                        "@id": "way/44402518",
+                        "addr:city": "Dublin",
+                        "addr:postal_district": "D06",
+                        "addr:street": "Rathmines Road Upper",
+                        "brand": "Tesco",
+                        "brand:wikidata": "Q487494",
+                        "brand:wikipedia": "en:Tesco",
+                        "building": "yes",
+                        "name": "Tesco",
+                        "opening_hours": "Mo-Sa 07:00-23:00; Su 08:00-22:00",
+                        "operator": "Tesco",
+                        "shop": "supermarket"
+                      },
+                      "geometry": {
+                        "type": "Polygon",
+                        "coordinates": [
+                          [
+                            [
+                              -6.2659802,
+                              53.3212765
+                            ],
+                            [
+                              -6.2662697,
+                              53.3212022
+                            ],
+                            [
+                              -6.2662598,
+                              53.3211883
+                            ],
+                            [
+                              -6.2662995,
+                              53.3211775
+                            ],
+                            [
+                              -6.2662808,
+                              53.3211506
+                            ],
+                            [
+                              -6.2662598,
+                              53.3211545
+                            ],
+                            [
+                              -6.2662388,
+                              53.3211583
+                            ],
+                            [
+                              -6.2661839,
+                              53.3210759
+                            ],
+                            [
+                              -6.2660072,
+                              53.3208085
+                            ],
+                            [
+                              -6.2656485,
+                              53.3208907
+                            ],
+                            [
+                              -6.2658565,
+                              53.3212351
+                            ],
+                            [
+                              -6.2659106,
+                              53.3212532
+                            ],
+                            [
+                              -6.2659802,
+                              53.3212765
+                            ]
+                          ]
+                        ]
+                      },
+                      "id": "way/44402518"
+                    },
+                    {
+                      "type": "Feature",
+                      "properties": {
+                        "@id": "way/48064995",
+                        "building": "yes",
+                        "name": "The Food Room",
+                        "shop": "deli",
+                        "source": "Bing"
+                      },
+                      "geometry": {
+                        "type": "Polygon",
+                        "coordinates": [
+                          [
+                            [
+                              -6.2193582,
+                              53.3630412
+                            ],
+                            [
+                              -6.2193678,
+                              53.363022
+                            ],
+                            [
+                              -6.2193861,
+                              53.3630204
+                            ],
+                            [
+                              -6.2193782,
+                              53.3629881
+                            ],
+                            [
+                              -6.2193218,
+                              53.362993
+                            ],
+                            [
+                              -6.2193027,
+                              53.3630314
+                            ],
+                            [
+                              -6.2192674,
+                              53.3630251
+                            ],
+                            [
+                              -6.2191792,
+                              53.3630094
+                            ],
+                            [
+                              -6.219139,
+                              53.3630902
+                            ],
+                            [
+                              -6.2192911,
+                              53.3631172
+                            ],
+                            [
+                              -6.2193435,
+                              53.3631265
+                            ],
+                            [
+                              -6.2193837,
+                              53.3630457
+                            ],
+                            [
+                              -6.2193582,
+                              53.3630412
+                            ]
+                          ]
+                        ]
+                      },
+                      "id": "way/48064995"
+                    },
+                    {
+                      "type": "Feature",
+                      "properties": {
+                        "@id": "way/51685753",
+                        "building": "yes",
+                        "name": "Spar",
+                        "operator": "Spar",
+                        "shop": "convenience"
+                      },
+                      "geometry": {
+                        "type": "Polygon",
+                        "coordinates": [
+                          [
+                            [
+                              -6.2634363,
+                              53.3576259
+                            ],
+                            [
+                              -6.2635,
+                              53.3575723
+                            ],
+                            [
+                              -6.2635509,
+                              53.3575199
+                            ],
+                            [
+                              -6.2632698,
+                              53.3574202
+                            ],
+                            [
+                              -6.263166,
+                              53.3575042
+                            ],
+                            [
+                              -6.2633347,
+                              53.3575781
+                            ],
+                            [
+                              -6.2634363,
+                              53.3576259
+                            ]
+                          ]
+                        ]
+                      },
+                      "id": "way/51685753"
+                    },
+                                      {
+                      "type": "Feature",
+                      "properties": {
+                        "@id": "way/44006067",
+                        "building": "yes",
+                        "name": "Swan Centre",
+                        "shop": "mall",
+                        "website": "http://www.swan.ie/",
+                        "year_of_construction": "1985"
+                      },
+                      "geometry": {
+                        "type": "Polygon",
+                        "coordinates": [
+                          [
+                            [
+                              -6.2640959,
+                              53.3229942
+                            ],
+                            [
+                              -6.2640887,
+                              53.3230634
+                            ],
+                            [
+                              -6.2640542,
+                              53.3232095
+                            ],
+                            [
+                              -6.2640092,
+                              53.3233999
+                            ],
+                            [
+                              -6.2639706,
+                              53.3235607
+                            ],
+                            [
+                              -6.2640453,
+                              53.3236512
+                            ],
+                            [
+                              -6.2640216,
+                              53.3237691
+                            ],
+                            [
+                              -6.2639117,
+                              53.3238264
+                            ],
+                            [
+                              -6.2638977,
+                              53.3239213
+                            ],
+                            [
+                              -6.2639848,
+                              53.323979
+                            ],
+                            [
+                              -6.2642559,
+                              53.3240015
+                            ],
+                            [
+                              -6.2647365,
+                              53.3237684
+                            ],
+                            [
+                              -6.2647417,
+                              53.3237502
+                            ],
+                            [
+                              -6.2647666,
+                              53.3236637
+                            ],
+                            [
+                              -6.2653362,
+                              53.3236788
+                            ],
+                            [
+                              -6.2653598,
+                              53.3235522
+                            ],
+                            [
+                              -6.2653826,
+                              53.3234291
+                            ],
+                            [
+                              -6.265125,
+                              53.3234229
+                            ],
+                            [
+                              -6.2651263,
+                              53.3234035
+                            ],
+                            [
+                              -6.2653865,
+                              53.3234097
+                            ],
+                            [
+                              -6.2654304,
+                              53.3231837
+                            ],
+                            [
+                              -6.2651274,
+                              53.3231726
+                            ],
+                            [
+                              -6.2651283,
+                              53.3231539
+                            ],
+                            [
+                              -6.2654325,
+                              53.3231632
+                            ],
+                            [
+                              -6.2654706,
+                              53.3229594
+                            ],
+                            [
+                              -6.2655284,
+                              53.3226499
+                            ],
+                            [
+                              -6.2655343,
+                              53.3226139
+                            ],
+                            [
+                              -6.2655343,
+                              53.3225879
+                            ],
+                            [
+                              -6.2655006,
+                              53.3225679
+                            ],
+                            [
+                              -6.265459,
+                              53.3225546
+                            ],
+                            [
+                              -6.2653517,
+                              53.3225566
+                            ],
+                            [
+                              -6.2650962,
+                              53.322591
+                            ],
+                            [
+                              -6.2650574,
+                              53.3227573
+                            ],
+                            [
+                              -6.2650054,
+                              53.3227568
+                            ],
+                            [
+                              -6.2648727,
+                              53.3227555
+                            ],
+                            [
+                              -6.2649031,
+                              53.3228197
+                            ],
+                            [
+                              -6.2647697,
+                              53.3228411
+                            ],
+                            [
+                              -6.264773,
+                              53.3228489
+                            ],
+                            [
+                              -6.2645882,
+                              53.3228762
+                            ],
+                            [
+                              -6.264481,
+                              53.322892
+                            ],
+                            [
+                              -6.2644769,
+                              53.3228843
+                            ],
+                            [
+                              -6.2643466,
+                              53.3229038
+                            ],
+                            [
+                              -6.2643492,
+                              53.32291
+                            ],
+                            [
+                              -6.2641811,
+                              53.3229348
+                            ],
+                            [
+                              -6.2641786,
+                              53.3229287
+                            ],
+                            [
+                              -6.2641004,
+                              53.3229399
+                            ],
+                            [
+                              -6.2640959,
+                              53.3229942
+                            ]
+                          ]
+                        ]
+                      },
+                      "id": "way/44006067"
+                    },
+                                       {
+                      "type": "Feature",
+                      "properties": {
+                        "@id": "way/249213113",
+                        "addr:city": "Dublin",
+                        "addr:housenumber": "64",
+                        "addr:street": "Grafton Street",
+                        "brand": "Monsoon",
+                        "brand:wikidata": "Q65007501",
+                        "brand:wikipedia": "en:Monsoon Accessorize",
+                        "building": "retail",
+                        "name": "Monsoon",
+                        "shop": "clothes",
+                        "toilets:wheelchair": "no",
+                        "wheelchair": "yes"
+                      },
+                      "geometry": {
+                        "type": "Polygon",
+                        "coordinates": [
+                          [
+                            [
+                              -6.2609855,
+                              53.3407882
+                            ],
+                            [
+                              -6.2608845,
+                              53.3407688
+                            ],
+                            [
+                              -6.2608467,
+                              53.3408331
+                            ],
+                            [
+                              -6.2609469,
+                              53.3408541
+                            ],
+                            [
+                              -6.2609855,
+                              53.3407882
+                            ]
+                          ]
+                        ]
+                      },
+                      "id": "way/249213113"
+                    },
+                    {
+                      "type": "Feature",
+                      "properties": {
+                        "@id": "way/249260481",
+                        "addr:city": "Dublin",
+                        "addr:housenumber": "30",
+                        "addr:street": "Grafton Street",
+                        "brand": "Carphone Warehouse",
+                        "brand:wikidata": "Q118046",
+                        "brand:wikipedia": "en:Carphone Warehouse",
+                        "building": "yes",
+                        "name": "Carphone Warehouse",
+                        "shop": "mobile_phone"
+                      },
+                      "geometry": {
+                        "type": "Polygon",
+                        "coordinates": [
+                          [
+                            [
+                              -6.2602683,
+                              53.3413863
+                            ],
+                            [
+                              -6.2601053,
+                              53.3413651
+                            ],
+                            [
+                              -6.2600986,
+                              53.3413835
+                            ],
+                            [
+                              -6.2600795,
+                              53.3413805
+                            ],
+                            [
+                              -6.2600631,
+                              53.3414215
+                            ],
+                            [
+                              -6.2602359,
+                              53.3414427
+                            ],
+                            [
+                              -6.2602683,
+                              53.3413863
+                            ]
+                          ]
+                        ]
+                      },
+                      "id": "way/249260481"
+                    },
+                    {
+                      "type": "Feature",
+                      "properties": {
+                        "@id": "way/249263087",
+                        "addr:city": "Dublin",
+                        "addr:housenumber": "77",
+                        "addr:street": "Grafton Street",
+                        "building": "yes",
+                        "name": "Thomas Patrick",
+                        "shop": "shoes"
+                      },
+                      "geometry": {
+                        "type": "Polygon",
+                        "coordinates": [
+                          [
+                            [
+                              -6.2603162,
+                              53.3416107
+                            ],
+                            [
+                              -6.2605325,
+                              53.3416595
+                            ],
+                            [
+                              -6.2605643,
+                              53.3416111
+                            ],
+                            [
+                              -6.2603497,
+                              53.3415627
+                            ],
+                            [
+                              -6.2603162,
+                              53.3416107
+                            ]
+                          ]
+                        ]
+                      },
+                      "id": "way/249263087"
+                    },
+                    {
+                      "type": "Feature",
+                      "properties": {
+                        "@id": "way/249264644",
+                        "addr:housenumber": "24",
+                        "addr:street": "Duke Street",
+                        "building": "retail",
+                        "contact:facebook": "https://www.facebook.com/feraud.dublin.ie",
+                        "name": "Ferraud",
+                        "shop": "clothes"
+                      },
+                      "geometry": {
+                        "type": "Polygon",
+                        "coordinates": [
+                          [
+                            [
+                              -6.2596366,
+                              53.3419139
+                            ],
+                            [
+                              -6.2596782,
+                              53.3418523
+                            ],
+                            [
+                              -6.2596951,
+                              53.341828
+                            ],
+                            [
+                              -6.2595913,
+                              53.3418145
+                            ],
+                            [
+                              -6.2595362,
+                              53.3419027
+                            ],
+                            [
+                              -6.2596366,
+                              53.3419139
+                            ]
+                          ]
+                        ]
+                      },
+                      "id": "way/249264644"
+                    },
+                    {
+                      "type": "Feature",
+                      "properties": {
+                        "@id": "way/249785472",
+                        "addr:city": "Dublin",
+                        "addr:housenumber": "112",
+                        "addr:street": "Baggot Street Lower",
+                        "building": "house",
+                        "name": "Adam Hairdressing",
+                        "note": "Dublin City Council, Record of Protected Structures (2010), no. 409",
+                        "shop": "hairdresser",
+                        "source": "Bing"
+                      },
+                      "geometry": {
+                        "type": "Polygon",
+                        "coordinates": [
+                          [
+                            [
+                              -6.2486204,
+                              53.3363539
+                            ],
+                            [
+                              -6.2487317,
+                              53.3364284
+                            ],
+                            [
+                              -6.2487388,
+                              53.3364225
+                            ],
+                            [
+                              -6.2488204,
+                              53.3363552
+                            ],
+                            [
+                              -6.2488967,
+                              53.3362922
+                            ],
+                            [
+                              -6.2487425,
+                              53.3362314
+                            ],
+                            [
+                              -6.2486808,
+                              53.3363002
+                            ],
+                            [
+                              -6.2486204,
+                              53.3363539
+                            ]
+                          ]
+                        ]
+                      },
+                      "id": "way/249785472"
+                    },
+                    {
+                      "type": "Feature",
+                      "properties": {
+                        "@id": "way/250331608",
+                        "addr:city": "Dublin",
+                        "addr:housenumber": "5",
+                        "addr:street": "Pembroke Street Lower",
+                        "building": "house",
+                        "shop": "hardware"
+                      },
+                      "geometry": {
+                        "type": "Polygon",
+                        "coordinates": [
+                          [
+                            [
+                              -6.252128,
+                              53.3371967
+                            ],
+                            [
+                              -6.2519889,
+                              53.3371508
+                            ],
+                            [
+                              -6.2519379,
+                              53.3372071
+                            ],
+                            [
+                              -6.2520786,
+                              53.3372513
+                            ],
+                            [
+                              -6.252128,
+                              53.3371967
+                            ]
+                          ]
+                        ]
+                      },
+                      "id": "way/250331608"
+                    },
+                    {
+                      "type": "Feature",
+                      "properties": {
+                        "@id": "way/250501872",
+                        "addr:city": "Dublin",
+                        "addr:housenumber": "53",
+                        "addr:street": "Middle Abbey Street",
+                        "building": "commercial",
+                        "email": "sales@pabtours.com",
+                        "name": "PAB Travel & Tours",
+                        "phone": "+353 1 8719819",
+                        "shop": "travel_agency",
+                        "website": "https://www.pabtours.com/"
+                      },
+                      "geometry": {
+                        "type": "Polygon",
+                        "coordinates": [
+                          [
+                            [
+                              -6.2624367,
+                              53.3479953
+                            ],
+                            [
+                              -6.262398,
+                              53.3478882
+                            ],
+                            [
+                              -6.2622955,
+                              53.3478997
+                            ],
+                            [
+                              -6.262332,
+                              53.3480067
+                            ],
+                            [
+                              -6.2624367,
+                              53.3479953
+                            ]
+                          ]
+                        ]
+                      },
+                      "id": "way/250501872"
+                    },
+                    {
+                      "type": "Feature",
+                      "properties": {
+                        "@id": "way/250501878",
+                        "addr:city": "Dublin",
+                        "addr:street": "Middle Abbey Street",
+                        "brand": "Paddy Power",
+                        "brand:wikidata": "Q3888718",
+                        "brand:wikipedia": "en:Paddy Power",
+                        "building": "commercial",
+                        "name": "Paddy Power",
+                        "shop": "bookmaker"
+                      },
+                      "geometry": {
+                        "type": "Polygon",
+                        "coordinates": [
+                          [
+                            [
+                              -6.2634917,
+                              53.3478678
+                            ],
+                            [
+                              -6.2635588,
+                              53.3478598
+                            ],
+                            [
+                              -6.2635802,
+                              53.3478414
+                            ],
+                            [
+                              -6.2635346,
+                              53.3477173
+                            ],
+                            [
+                              -6.2634448,
+                              53.3477301
+                            ],
+                            [
+                              -6.2634917,
+                              53.3478678
+                            ]
+                          ]
+                        ]
+                      },
+                      "id": "way/250501878"
+                    },{
+                      "type": "Feature",
+                      "properties": {
+                        "@id": "way/250501884",
+                        "addr:city": "Dublin",
+                        "addr:housenumber": "60",
+                        "addr:street": "Middle Abbey Street",
+                        "building": "commercial",
+                        "fax": "+353 1 8730588",
+                        "name": "J.J. Lalor Printers",
+                        "phone": "+353 1 8730032",
+                        "shop": "print"
+                      },
+                      "geometry": {
+                        "type": "Polygon",
+                        "coordinates": [
+                          [
+                            [
+                              -6.2616248,
+                              53.348091
+                            ],
+                            [
+                              -6.2617209,
+                              53.3480792
+                            ],
+                            [
+                              -6.2616841,
+                              53.3479726
+                            ],
+                            [
+                              -6.2616707,
+                              53.347918
+                            ],
+                            [
+                              -6.2617391,
+                              53.3479122
+                            ],
+                            [
+                              -6.2617179,
+                              53.3478295
+                            ],
+                            [
+                              -6.2616186,
+                              53.3478354
+                            ],
+                            [
+                              -6.2615844,
+                              53.3477216
+                            ],
+                            [
+                              -6.2615014,
+                              53.3477362
+                            ],
+                            [
+                              -6.2615551,
+                              53.3479306
+                            ],
+                            [
+                              -6.261588,
+                              53.3479844
+                            ],
+                            [
+                              -6.2616248,
+                              53.348091
+                            ]
+                          ]
+                        ]
+                      },
+                      "id": "way/250501884"
+                    },
+                    {
+                      "type": "Feature",
+                      "properties": {
+                        "@id": "way/250501895",
+                        "addr:city": "Dublin",
+                        "addr:housenumber": "73",
+                        "addr:street": "Middle Abbey Street",
+                        "brand": "Ladbrokes",
+                        "brand:wikidata": "Q1799875",
+                        "brand:wikipedia": "en:Ladbrokes Coral",
+                        "building": "yes",
+                        "name": "Ladbrokes",
+                        "shop": "bookmaker"
+                      },
+                      "geometry": {
+                        "type": "Polygon",
+                        "coordinates": [
+                          [
+                            [
+                              -6.2604781,
+                              53.3481913
+                            ],
+                            [
+                              -6.2605938,
+                              53.348182
+                            ],
+                            [
+                              -6.2605706,
+                              53.3480825
+                            ],
+                            [
+                              -6.2605413,
+                              53.3479582
+                            ],
+                            [
+                              -6.2604356,
+                              53.3479748
+                            ],
+                            [
+                              -6.2604781,
+                              53.3481913
+                            ]
+                          ]
+                        ]
+                      },
+                      "id": "way/250501895"
+                    },
+                    {
+                      "type": "Feature",
+                      "properties": {
+                        "@id": "way/250504041",
+                        "building": "yes",
+                        "name": "Easons",
+                        "payment:cash": "yes",
+                        "payment:credit_cards": "yes",
+                        "shop": "books",
+                        "website": "https://www.easons.com/"
+                      },
+                      "geometry": {
+                        "type": "Polygon",
+                        "coordinates": [
+                          [
+                            [
+                              -6.2603785,
+                              53.3483901
+                            ],
+                            [
+                              -6.2604241,
+                              53.3485022
+                            ],
+                            [
+                              -6.260257,
+                              53.3485204
+                            ],
+                            [
+                              -6.2600905,
+                              53.3485424
+                            ],
+                            [
+                              -6.2601273,
+                              53.3486327
+                            ],
+                            [
+                              -6.2601675,
+                              53.3487313
+                            ],
+                            [
+                              -6.2608542,
+                              53.3486392
+                            ],
+                            [
+                              -6.2608081,
+                              53.3485066
+                            ],
+                            [
+                              -6.2607763,
+                              53.3485109
+                            ],
+                            [
+                              -6.2607242,
+                              53.3483553
+                            ],
+                            [
+                              -6.2605314,
+                              53.3483747
+                            ],
+                            [
+                              -6.2603785,
+                              53.3483901
+                            ]
+                          ]
+                        ]
+                      },
+                      "id": "way/250504041"
+                    },
+                    {
+                      "type": "Feature",
+                      "properties": {
+                        "@id": "way/251202827",
+                        "addr:city": "Dublin",
+                        "addr:housenumber": "3",
+                        "addr:street": "Anne's Lane",
+                        "building": "yes",
+                        "name": "Myrtle Ivory",
+                        "shop": "clothes",
+                        "website": "http://www.myrtleivory.com/"
+                      },
+                      "geometry": {
+                        "type": "Polygon",
+                        "coordinates": [
+                          [
+                            [
+                              -6.2596626,
+                              53.3407222
+                            ],
+                            [
+                              -6.2596378,
+                              53.3408002
+                            ],
+                            [
+                              -6.2597393,
+                              53.3408118
+                            ],
+                            [
+                              -6.2597652,
+                              53.3407338
+                            ],
+                            [
+                              -6.2596626,
+                              53.3407222
+                            ]
+                          ]
+                        ]
+                      },
+                      "id": "way/251202827"
+                    },
+                    {
+                      "type": "Feature",
+                      "properties": {
+                        "@id": "way/251400326",
+                        "addr:city": "Dublin",
+                        "addr:housenumber": "5",
+                        "addr:street": "Chatham Street",
+                        "building": "yes",
+                        "name": "Muji",
+                        "phone": "+35316794591",
+                        "shop": "variety_store"
+                      },
+                      "geometry": {
+                        "type": "Polygon",
+                        "coordinates": [
+                          [
+                            [
+                              -6.2615558,
+                              53.3407684
+                            ],
+                            [
+                              -6.2616071,
+                              53.3406597
+                            ],
+                            [
+                              -6.2615577,
+                              53.3406527
+                            ],
+                            [
+                              -6.2615517,
+                              53.3406611
+                            ],
+                            [
+                              -6.2615276,
+                              53.3406875
+                            ],
+                            [
+                              -6.2614981,
+                              53.3406831
+                            ],
+                            [
+                              -6.261465,
+                              53.3407554
+                            ],
+                            [
+                              -6.2615558,
+                              53.3407684
+                            ]
+                          ]
+                        ]
+                      },
+                      "id": "way/251400326"
+                    },
+                    {
+                      "type": "Feature",
+                      "properties": {
+                        "@id": "way/251523512",
+                        "addr:city": "Dublin",
+                        "addr:street": "Clarendon Street",
+                        "building": "yes",
+                        "name": "L. Mulligan Whiskey Shop",
+                        "shop": "alcohol"
+                      },
+                      "geometry": {
+                        "type": "Polygon",
+                        "coordinates": [
+                          [
+                            [
+                              -6.2614986,
+                              53.3419422
+                            ],
+                            [
+                              -6.2614379,
+                              53.3420153
+                            ],
+                            [
+                              -6.261559,
+                              53.3420442
+                            ],
+                            [
+                              -6.2616136,
+                              53.3419691
+                            ],
+                            [
+                              -6.2614986,
+                              53.3419422
+                            ]
+                          ]
+                        ]
+                      },
+                      "id": "way/251523512"
+                    },
+                    {
+                      "type": "Feature",
+                      "properties": {
+                        "@id": "way/251580558",
+                        "addr:city": "Dublin",
+                        "addr:housenumber": "34",
+                        "addr:street": "College Green",
+                        "brand": "Abercrombie & Fitch",
+                        "brand:wikidata": "Q319344",
+                        "brand:wikipedia": "en:Abercrombie & Fitch",
+                        "building": "yes",
+                        "clothes": "men;women",
+                        "name": "Abercrombie & Fitch",
+                        "note": "Dublin City Council, Record of Protected Structures (2010), no. 1996",
+                        "opening_hours": "Mo 11:00-18:00; Tu-We 10:00-19:00; Th-Fr 10:00-20:00; Sa 10:00-19:00; Su 11:00-18:00",
+                        "phone": "+353-1-6040038",
+                        "shop": "clothes",
+                        "wheelchair": "yes"
+                      },
+                      "geometry": {
+                        "type": "Polygon",
+                        "coordinates": [
+                          [
+                            [
+                              -6.2602147,
+                              53.3441809
+                            ],
+                            [
+                              -6.260214,
+                              53.3441745
+                            ],
+                            [
+                              -6.2602902,
+                              53.3441686
+                            ],
+                            [
+                              -6.260271,
+                              53.3440196
+                            ],
+                            [
+                              -6.2602495,
+                              53.3440204
+                            ],
+                            [
+                              -6.2602361,
+                              53.3438923
+                            ],
+                            [
+                              -6.2602804,
+                              53.343823
+                            ],
+                            [
+                              -6.2600806,
+                              53.3437457
+                            ],
+                            [
+                              -6.2598958,
+                              53.3439033
+                            ],
+                            [
+                              -6.2599102,
+                              53.3440749
+                            ],
+                            [
+                              -6.2599195,
+                              53.3441847
+                            ],
+                            [
+                              -6.259984,
+                              53.3441829
+                            ],
+                            [
+                              -6.2599847,
+                              53.344189
+                            ],
+                            [
+                              -6.2602147,
+                              53.3441809
+                            ]
+                          ]
+                        ]
+                      },
+                      "id": "way/251580558"
+                    },
+                    {
+                      "type": "Feature",
+                      "properties": {
+                        "@id": "way/251580559",
+                        "addr:housenumber": "23-27",
+                        "addr:street": "College Green",
+                        "brand": "H&M",
+                        "brand:wikidata": "Q188326",
+                        "brand:wikipedia": "en:H&M",
+                        "building": "commercial",
+                        "building:levels": "4",
+                        "name": "H&M",
+                        "note": "Former National Irish Bank, previously Hibernian Bank, Dublin City Council, Record of Protected Structures (2010), no. 1994",
+                        "old_name": "National Irish Bank",
+                        "shop": "clothes",
+                        "wheelchair": "yes",
+                        "wheelchair:description": "They have lifts",
+                        "year_built": "1824"
+                      },
+                      "geometry": {
+                        "type": "Polygon",
+                        "coordinates": [
+                          [
+                            [
+                              -6.2610567,
+                              53.3441835
+                            ],
+                            [
+                              -6.2614356,
+                              53.344177
+                            ],
+                            [
+                              -6.2614478,
+                              53.3441448
+                            ],
+                            [
+                              -6.2614626,
+                              53.3441352
+                            ],
+                            [
+                              -6.2614721,
+                              53.3441247
+                            ],
+                            [
+                              -6.2614734,
+                              53.344115
+                            ],
+                            [
+                              -6.261468,
+                              53.3441021
+                            ],
+                            [
+                              -6.2614626,
+                              53.3440917
+                            ],
+                            [
+                              -6.2614451,
+                              53.3440828
+                            ],
+                            [
+                              -6.2614168,
+                              53.3440216
+                            ],
+                            [
+                              -6.2614033,
+                              53.3440249
+                            ],
+                            [
+                              -6.2613777,
+                              53.3439854
+                            ],
+                            [
+                              -6.261139,
+                              53.3439888
+                            ],
+                            [
+                              -6.2611397,
+                              53.3439477
+                            ],
+                            [
+                              -6.2613191,
+                              53.3438928
+                            ],
+                            [
+                              -6.2612394,
+                              53.3438119
+                            ],
+                            [
+                              -6.2609734,
+                              53.3439061
+                            ],
+                            [
+                              -6.2609812,
+                              53.343991
+                            ],
+                            [
+                              -6.2609933,
+                              53.3441521
+                            ],
+                            [
+                              -6.2610567,
+                              53.3441835
+                            ]
+                          ]
+                        ]
+                      },
+                      "id": "way/251580559"
+                    },
+                    {
+                      "type": "Feature",
+                      "properties": {
+                        "@id": "way/252809418",
+                        "addr:housenumber": "149",
+                        "addr:street": "Parnell Street",
+                        "brand": "Paddy Power",
+                        "brand:wikidata": "Q3888718",
+                        "brand:wikipedia": "en:Paddy Power",
+                        "building": "commercial",
+                        "building:levels": "2",
+                        "name": "Paddy Power",
+                        "shop": "bookmaker"
+                      },
+                      "geometry": {
+                        "type": "Polygon",
+                        "coordinates": [
+                          [
+                            [
+                              -6.2600168,
+                              53.3533558
+                            ],
+                            [
+                              -6.2599197,
+                              53.3533982
+                            ],
+                            [
+                              -6.2599948,
+                              53.3534576
+                            ],
+                            [
+                              -6.2600904,
+                              53.3534158
+                            ],
+                            [
+                              -6.2600168,
+                              53.3533558
+                            ]
+                          ]
+                        ]
+                      },
+                      "id": "way/252809418"
+                    },
+                    {
+                      "type": "Feature",
+                      "properties": {
+                        "@id": "way/252809419",
+                        "addr:city": "Dublin",
+                        "addr:housenumber": "148",
+                        "addr:street": "Parnell Street",
+                        "building": "yes",
+                        "building:levels": "4",
+                        "name": "Lucky Duffy's",
+                        "shop": "variety_store"
+                      },
+                      "geometry": {
+                        "type": "Polygon",
+                        "coordinates": [
+                          [
+                            [
+                              -6.2599197,
+                              53.3533982
+                            ],
+                            [
+                              -6.2598546,
+                              53.353427
+                            ],
+                            [
+                              -6.2599508,
+                              53.3535009
+                            ],
+                            [
+                              -6.2600132,
+                              53.3534721
+                            ],
+                            [
+                              -6.2599948,
+                              53.3534576
+                            ],
+                            [
+                              -6.2599197,
+                              53.3533982
+                            ]
+                          ]
+                        ]
+                      },
+                      "id": "way/252809419"
+                    },
+                    {
+                      "type": "Feature",
+                      "properties": {
+                        "@id": "way/252809420",
+                        "addr:city": "Dublin",
+                        "addr:housenumber": "147",
+                        "addr:street": "Parnell Street",
+                        "building": "yes",
+                        "building:levels": "4",
+                        "name": "147 Deli",
+                        "old_ref": "Charlie - C4 Foods",
+                        "shop": "deli"
+                      },
+                      "geometry": {
+                        "type": "Polygon",
+                        "coordinates": [
+                          [
+                            [
+                              -6.2598546,
+                              53.353427
+                            ],
+                            [
+                              -6.2597581,
+                              53.3534692
+                            ],
+                            [
+                              -6.2598607,
+                              53.3535473
+                            ],
+                            [
+                              -6.2599553,
+                              53.3535044
+                            ],
+                            [
+                              -6.2599508,
+                              53.3535009
+                            ],
+                            [
+                              -6.2598546,
+                              53.353427
+                            ]
+                          ]
+                        ]
+                      },
+                      "id": "way/252809420"
+                    },
+                                      {
+                      "type": "Feature",
+                      "properties": {
+                        "@id": "way/252809422",
+                        "addr:city": "Dublin",
+                        "addr:housenumber": "145",
+                        "addr:street": "Parnell Street",
+                        "building": "yes",
+                        "building:levels": "4",
+                        "name": "Brazuca's",
+                        "old_name": "Assorti",
+                        "old_name_1": "Titbit",
+                        "shop": "convenience"
+                      },
+                      "geometry": {
+                        "type": "Polygon",
+                        "coordinates": [
+                          [
+                            [
+                              -6.2596629,
+                              53.3535117
+                            ],
+                            [
+                              -6.2596012,
+                              53.3535397
+                            ],
+                            [
+                              -6.2596857,
+                              53.3536029
+                            ],
+                            [
+                              -6.2597465,
+                              53.3535745
+                            ],
+                            [
+                              -6.2596629,
+                              53.3535117
+                            ]
+                          ]
+                        ]
+                      },
+                      "id": "way/252809422"
+                    },
+                    {
+                      "type": "Feature",
+                      "properties": {
+                        "@id": "way/252812512",
+                        "addr:city": "Dublin",
+                        "addr:housename": "Rosemound House",
+                        "addr:housenumber": "163",
+                        "addr:street": "Parnell Street",
+                        "building": "yes",
+                        "building:levels": "4",
+                        "name": "Dance World",
+                        "shop": "clothes"
+                      },
+                      "geometry": {
+                        "type": "Polygon",
+                        "coordinates": [
+                          [
+                            [
+                              -6.261027,
+                              53.353008
+                            ],
+                            [
+                              -6.2610497,
+                              53.3529981
+                            ],
+                            [
+                              -6.2611512,
+                              53.352955
+                            ],
+                            [
+                              -6.2611328,
+                              53.3529401
+                            ],
+                            [
+                              -6.2611154,
+                              53.3529473
+                            ],
+                            [
+                              -6.2610375,
+                              53.3528838
+                            ],
+                            [
+                              -6.2609614,
+                              53.352917
+                            ],
+                            [
+                              -6.2609302,
+                              53.3529309
+                            ],
+                            [
+                              -6.261027,
+                              53.353008
+                            ]
+                          ]
+                        ]
+                      },
+                      "id": "way/252812512"
+                    },
+                    {
+                      "type": "Feature",
+                      "properties": {
+                        "@id": "way/255284415",
+                        "building": "yes",
+                        "name": "Aldi",
+                        "shop": "supermarket"
+                      },
+                      "geometry": {
+                        "type": "Polygon",
+                        "coordinates": [
+                          [
+                            [
+                              -6.3463544,
+                              53.3355125
+                            ],
+                            [
+                              -6.3463274,
+                              53.3354388
+                            ],
+                            [
+                              -6.3463718,
+                              53.335433
+                            ],
+                            [
+                              -6.3463056,
+                              53.3352525
+                            ],
+                            [
+                              -6.3460025,
+                              53.3352921
+                            ],
+                            [
+                              -6.3460128,
+                              53.33532
+                            ],
+                            [
+                              -6.3453207,
+                              53.3354105
+                            ],
+                            [
+                              -6.3453881,
+                              53.3355943
+                            ],
+                            [
+                              -6.3452973,
+                              53.3356062
+                            ],
+                            [
+                              -6.3453129,
+                              53.3356487
+                            ],
+                            [
+                              -6.3463544,
+                              53.3355125
+                            ]
+                          ]
+                        ]
+                      },
+                      "id": "way/255284415"
+                    },
+                    {
+                      "type": "Feature",
+                      "properties": {
+                        "@id": "way/255519867",
+                        "building": "retail",
+                        "name": "Iceland",
+                        "shop": "supermarket"
+                      },
+                      "geometry": {
+                        "type": "Polygon",
+                        "coordinates": [
+                          [
+                            [
+                              -6.3567061,
+                              53.3431363
+                            ],
+                            [
+                              -6.3568083,
+                              53.3429294
+                            ],
+                            [
+                              -6.3565029,
+                              53.3428757
+                            ],
+                            [
+                              -6.3565119,
+                              53.3428576
+                            ],
+                            [
+                              -6.356378,
+                              53.342834
+                            ],
+                            [
+                              -6.3563702,
+                              53.3428498
+                            ],
+                            [
+                              -6.3563445,
+                              53.3428453
+                            ],
+                            [
+                              -6.3562845,
+                              53.3429669
+                            ],
+                            [
+                              -6.3561986,
+                              53.3429518
+                            ],
+                            [
+                              -6.3561636,
+                              53.3430227
+                            ],
+                            [
+                              -6.3562722,
+                              53.3430418
+                            ],
+                            [
+                              -6.3562639,
+                              53.3430585
+                            ],
+                            [
+                              -6.3567061,
+                              53.3431363
+                            ]
+                          ]
+                        ]
+                      },
+                      "id": "way/255519867"
+                    },
+                    {
+                      "type": "Feature",
+                      "properties": {
+                        "@id": "way/256911797",
+                        "addr:housenumber": "49-50",
+                        "addr:street": "Parnell Square West",
+                        "building": "yes",
+                        "name": "Hillsboro Fine Art",
+                        "opening_hours": "Mo-Fr 10:30-18:00, Sa 10:30-15:30",
+                        "phone": "+353 1 8788242",
+                        "shop": "art",
+                        "source": "survey",
+                        "website": "http://www.hillsborofineart.com/"
+                      },
+                      "geometry": {
+                        "type": "Polygon",
+                        "coordinates": [
+                          [
+                            [
+                              -6.263941,
+                              53.3523075
+                            ],
+                            [
+                              -6.2640376,
+                              53.3523756
+                            ],
+                            [
+                              -6.2641831,
+                              53.3523027
+                            ],
+                            [
+                              -6.2641079,
+                              53.3522513
+                            ],
+                            [
+                              -6.2640643,
+                              53.3522763
+                            ],
+                            [
+                              -6.2640465,
+                              53.3522641
+                            ],
+                            [
+                              -6.2640186,
+                              53.3522787
+                            ],
+                            [
+                              -6.264008,
+                              53.3522715
+                            ],
+                            [
+                              -6.263941,
+                              53.3523075
+                            ]
+                          ]
+                        ]
+                      },
+                      "id": "way/256911797"
+                    },
+                    {
+                      "type": "Feature",
+                      "properties": {
+                        "@id": "way/259749080",
+                        "building": "commercial",
+                        "name": "Macken Motors",
+                        "shop": "car_repair",
+                        "wheelchair": "yes"
+                      },
+                      "geometry": {
+                        "type": "Polygon",
+                        "coordinates": [
+                          [
+                            [
+                              -6.2411028,
+                              53.3436581
+                            ],
+                            [
+                              -6.2410959,
+                              53.3436872
+                            ],
+                            [
+                              -6.2410898,
+                              53.343713
+                            ],
+                            [
+                              -6.2412613,
+                              53.3437256
+                            ],
+                            [
+                              -6.2412695,
+                              53.3436721
+                            ],
+                            [
+                              -6.2411028,
+                              53.3436581
+                            ]
+                          ]
+                        ]
+                      },
+                      "id": "way/259749080"
+                    },
+                    {
+                      "type": "Feature",
+                      "properties": {
+                        "@id": "way/259900407",
+                        "addr:city": "Dublin",
+                        "addr:street": "Saint Margaret's Road",
+                        "building": "retail",
+                        "name": "Aldi",
+                        "operator": "Aldi",
+                        "shop": "supermarket"
+                      },
+                      "geometry": {
+                        "type": "Polygon",
+                        "coordinates": [
+                          [
+                            [
+                              -6.3050471,
+                              53.3987987
+                            ],
+                            [
+                              -6.3050867,
+                              53.3987239
+                            ],
+                            [
+                              -6.3052185,
+                              53.3987096
+                            ],
+                            [
+                              -6.3051659,
+                              53.398574
+                            ],
+                            [
+                              -6.3051757,
+                              53.3985556
+                            ],
+                            [
+                              -6.3044241,
+                              53.3984144
+                            ],
+                            [
+                              -6.3044046,
+                              53.3984512
+                            ],
+                            [
+                              -6.3042793,
+                              53.3986883
+                            ],
+                            [
+                              -6.3045184,
+                              53.3987332
+                            ],
+                            [
+                              -6.3045347,
+                              53.3987024
+                            ],
+                            [
+                              -6.3050471,
+                              53.3987987
+                            ]
+                          ]
+                        ]
+                      },
+                      "id": "way/259900407"
+                    },
+                    {
+                      "type": "Feature",
+                      "properties": {
+                        "@id": "way/260260344",
+                        "addr:city": "Dublin",
+                        "addr:housenumber": "19",
+                        "addr:street": "Suffolk Street",
+                        "brand": "Elvery's",
+                        "building": "commercial",
+                        "building:levels": "5",
+                        "shop": "sports",
+                        "toilets:wheelchair": "no",
+                        "wheelchair": "yes"
+                      },
+                      "geometry": {
+                        "type": "Polygon",
+                        "coordinates": [
+                          [
+                            [
+                              -6.2600008,
+                              53.3433798
+                            ],
+                            [
+                              -6.2600947,
+                              53.3432829
+                            ],
+                            [
+                              -6.2600129,
+                              53.343254
+                            ],
+                            [
+                              -6.2599243,
+                              53.3433509
+                            ],
+                            [
+                              -6.2600008,
+                              53.3433798
+                            ]
+                          ]
+                        ]
+                      },
+                      "id": "way/260260344"
+                    },
+                    {
+                      "type": "Feature",
+                      "properties": {
+                        "@id": "way/260314009",
+                        "addr:city": "Dublin",
+                        "addr:housenumber": "18",
+                        "addr:street": "Saint Andrew Street",
+                        "building": "yes",
+                        "building:levels": "4",
+                        "name": "Rhinestones",
+                        "shop": "jewelry"
+                      },
+                      "geometry": {
+                        "type": "Polygon",
+                        "coordinates": [
+                          [
+                            [
+                              -6.2617225,
+                              53.3436433
+                            ],
+                            [
+                              -6.2616589,
+                              53.3436687
+                            ],
+                            [
+                              -6.2617608,
+                              53.34376
+                            ],
+                            [
+                              -6.2618261,
+                              53.3437358
+                            ],
+                            [
+                              -6.2617795,
+                              53.3436942
+                            ],
+                            [
+                              -6.2617542,
+                              53.3436716
+                            ],
+                            [
+                              -6.2617225,
+                              53.3436433
+                            ]
+                          ]
+                        ]
+                      },
+                      "id": "way/260314009"
+                    },
+                    {
+                      "type": "Feature",
+                      "properties": {
+                        "@id": "way/260578708",
+                        "addr:street": "Rathgar Road",
+                        "brand": "Circle K",
+                        "brand:wikidata": "Q3268010",
+                        "brand:wikipedia": "en:Circle K",
+                        "building": "retail",
+                        "building:levels": "1",
+                        "name": "Circle K",
+                        "old_name": "On The Run",
+                        "old_name:2018": "Re Store",
+                        "operator": "Circle K",
+                        "shop": "convenience"
+                      },
+                      "geometry": {
+                        "type": "Polygon",
+                        "coordinates": [
+                          [
+                            [
+                              -6.2683352,
+                              53.3209032
+                            ],
+                            [
+                              -6.2683947,
+                              53.320816
+                            ],
+                            [
+                              -6.2681331,
+                              53.3207523
+                            ],
+                            [
+                              -6.2680735,
+                              53.3208395
+                            ],
+                            [
+                              -6.2683352,
+                              53.3209032
+                            ]
+                          ]
+                        ]
+                      },
+                      "id": "way/260578708"
+                    },
+                      {
+                       "type": "Feature",
+                        "properties": {
+                        "@id": "node/6897793436",
+                        "addr:city": "Dublin 2",
+                        "email": "info@veganic.ie",
+                        "level": "0",
+                        "name": "Veganic",
+                        "opening_hours": "Mo-We 09:00-19:00; Th-Sa 09:00-19:30; Su 11:00-18:00",
+                        "shop": "health_food",
+                        "website": "https://www.veganic.ie"
+                      },
+                      "geometry": {
+                        "type": "Point",
+                        "coordinates": [
+                          -6.2615,
+                          53.3399837
+                        ]
+                      },
+                      "id": "node/6897793436"
+                    },
+                    {
+                      "type": "Feature",
+                      "properties": {
+                        "@id": "node/6897793437",
+                        "brand": "GameStop",
+                        "brand:wikidata": "Q202210",
+                        "brand:wikipedia": "en:GameStop",
+                        "level": "0",
+                        "name": "GameStop",
+                        "shop": "video_games"
+                      },
+                      "geometry": {
+                        "type": "Point",
+                        "coordinates": [
+                          -6.2617312,
+                          53.3397257
+                        ]
+                      },
+                      "id": "node/6897793437"
+                    },
+                    {
+                      "type": "Feature",
+                      "properties": {
+                        "@id": "node/6937546349",
+                        "shop": "alcohol"
+                      },
+                      "geometry": {
+                        "type": "Point",
+                        "coordinates": [
+                          -6.258882,
+                          53.3626685
+                        ]
+                      },
+                      "id": "node/6937546349"
+                    }
+                  ]
+                };
+
+                var addedGeoJSON = L.geoJSON(geojson, {
+                    style: function(feature)
+                    {
+                        return{
+                            color: '#055'
+                        }
+                    },
+                    pointToLayer: function(geoJsonPoint, latlng)
+                    {
+                        return L.marker(latlng, {
+                            icon: blackIcon
+                        });
+                    },
+                    onEachFeature: function(feature, layer)
+                    {
+                        if(feature.geometry.type === 'Point')
+                        {
+                            layer.bindPopup(feature.properties.name);
+                        }
+
+                    }
+                }).addTo(map);
+
+                map.fitBounds(addedGeoJSON.getBounds(), {
+                    padding: [20,20]
+                });
+
+            }
+
+        </script>
+        {% leaflet_map "gis" callback="window.our_layers" %}
+
+    <h1> Click below to find the shops closest to you:</h1>
+    <a href='nearbyShops'><button>Find the nearest shops near you</button></a>
+    </body>
+
+
+</html>

@@ -1,0 +1,25 @@
+[[source]]
+name = "pypi"
+url = "https://pypi.org/simple"
+verify_ssl = true
+
+[dev-packages]
+
+[packages]
+django = "<=2.9"
+psycopg2 = "*"
+pydot = "*"
+django-extensions = "*"
+django-crispy-forms = "*"
+django-leaflet = "*"
+django-jquery = "*"
+django-bootstrap3 = "*"
+uwsgi = "*"
+django-cors-headers = "*"
+django-pwa = "*"
+overpy = "*"
+djangorestframework = "*"
+djangorestframework-gis = "*"
+
+[requires]
+python_version = "3.7"

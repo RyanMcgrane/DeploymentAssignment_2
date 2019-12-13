@@ -1,0 +1,293 @@
+<!DOCTYPE html>
+<html>
+{% extends "shops/base.html" %}
+{% load static %}
+{% load leaflet_tags %}
+    <head>
+        {% leaflet_js %}
+        {% leaflet_css %}
+        <title> Assignment One: Demonstration</title>
+        <style type="text/css">
+            #gis { margin-left:10%; width: 80%; height: 800px;}
+            h1{text-align: center}
+            button{ margin-left: 45%;}
+        </style>
+
+        <link rel ="stylesheet" type="text/css" href="{% static 'leaflet-groupedlayercontrol-gh-pages/src/leaflet.groupedlayercontrol.css' %}">
+        <script type="text/javascript" src="{% static 'dist/leaflet.ajax.js' %}"> </script>
+        <script type="text/javascript" src="{% static 'leaflet-groupedlayercontrol-gh-pages/src/leaflet.groupedlayercontrol.js' %}"> </script>
+    </head>
+
+    <body>
+        <h1> Welcome to your frontend for the assignment </h1>
+        <br>
+        <script type="text/javascript">
+            function our_layers(map,options)
+            {
+                var osm = L.tileLayer('http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png');
+
+               // var svg = 'location.svg'
+               // var iconUrl = 'data:image/svg+xml;base64,' + btoa(svg);
+
+                var blackIcon = L.icon({
+                    iconUrl: 'location.svg',
+                    iconSize: [32, 37],
+                    iconAnchor: [16, 37],
+                    popupAnchor: [0, -30]
+                });
+
+                var popup = L.popup();
+
+
+                L.marker([53.36365, -6.35353],{icon: blackIcon}).addTo(map).bindPopup("I'm a black marker");
+                L.marker([55.36365, -4.35353],{icon: blackIcon}).addTo(map);
+
+                L.marker([53.36365, -6.35353]).addTo(map);
+
+
+                var datasets = new L.GeoJSON.AJAX("{% url 'county' %}",
+                {
+                    style: function colors(feature)
+                    {
+                        switch(feature.properties.name_tag)
+                        {
+                            case 'Dublin':
+                                return{
+                                color: 'orange'
+                            };
+                            break;
+
+                            case 'Kildare':
+                                return{
+                                color: 'green'
+                            };
+                            break;
+                        }
+                    },
+
+                    onEachFeature: function(feature,layer){
+                        layer.bindPopup(feature.properties.name_tag.toString());
+                    }
+                });
+
+                var points = new L.GeoJSON.AJAX("{% url 'incidences' %}",
+                {
+
+                    onEachFeature: function(feature,layer)
+                    {
+                        layer.bindPopup(feature.properties.name.toString());
+                    }
+                });
+
+                datasets.addTo(map);
+                points.addTo(map);
+
+                var baseLayers = {
+                    "OSM": osm
+                }
+
+                var groupedOverlays = {
+                  "Layers": {
+                    "counties": datasets,
+                    "incidences": points
+                  },
+                };
+
+                L.control.groupedLayers(baseLayers, groupedOverlays).addTo(map);
+
+                geojson = {
+                  "type": "FeatureCollection",
+                  "generator": "overpass-ide",
+                  "copyright": "The data included in this document is from www.openstreetmap.org. The data is made available under ODbL.",
+                  "timestamp": "2019-11-04T16:37:02Z",
+                  "features": [
+                    {
+                      "type": "Feature",
+                      "properties": {
+                        "@id": "relation/3630034",
+                        "addr:city": "Dublin",
+                        "addr:housenumber": "15-19",
+                        "addr:street": "Grafton Street",
+                        "brand": "Marks & Spencer",
+                        "brand:wikidata": "Q714491",
+                        "brand:wikipedia": "en:Marks & Spencer",
+                        "building": "yes",
+                        "fixme": "Buildings need to be split",
+                        "name": "Marks & Spencer",
+                        "shop": "department_store",
+                        "type": "multipolygon"
+                      },
+                      "geometry": {
+                        "type": "Polygon",
+                        "coordinates": [
+                          [
+                            [
+                              -6.2596152,
+                              53.3423495
+                            ],
+                            [
+                              -6.2596231,
+                              53.3423506
+                            ],
+                            [
+                              -6.2598022,
+                              53.3420706
+                            ],
+                            [
+                              -6.2596634,
+                              53.3420598
+                            ],
+                            [
+                              -6.2595198,
+                              53.3420476
+                            ],
+                            [
+                              -6.259411,
+                              53.3420383
+                            ],
+                            [
+                              -6.259324,
+                              53.3420309
+                            ],
+                            [
+                              -6.2592393,
+                              53.3420236
+                            ],
+                            [
+                              -6.259179,
+                              53.3420185
+                            ],
+                            [
+                              -6.2591739,
+                              53.3420375
+                            ],
+                            [
+                              -6.2591343,
+                              53.3420332
+                            ],
+                            [
+                              -6.2590471,
+                              53.3420249
+                            ],
+                            [
+                              -6.2589372,
+                              53.3420188
+                            ],
+                            [
+                              -6.2588563,
+                              53.3422538
+                            ],
+                            [
+                              -6.2589656,
+                              53.3422601
+                            ],
+                            [
+                              -6.2593803,
+                              53.3423171
+                            ],
+                            [
+                              -6.2596152,
+                              53.3423495
+                            ]
+                          ]
+                        ]
+                      },
+                      "id": "relation/3630034"
+                    },
+                      {
+                       "type": "Feature",
+                        "properties": {
+                        "@id": "node/6897793436",
+                        "addr:city": "Dublin 2",
+                        "email": "info@veganic.ie",
+                        "level": "0",
+                        "name": "Veganic",
+                        "opening_hours": "Mo-We 09:00-19:00; Th-Sa 09:00-19:30; Su 11:00-18:00",
+                        "shop": "health_food",
+                        "website": "https://www.veganic.ie"
+                      },
+                      "geometry": {
+                        "type": "Point",
+                        "coordinates": [
+                          -6.2615,
+                          53.3399837
+                        ]
+                      },
+                      "id": "node/6897793436"
+                    },
+                    {
+                      "type": "Feature",
+                      "properties": {
+                        "@id": "node/6897793437",
+                        "brand": "GameStop",
+                        "brand:wikidata": "Q202210",
+                        "brand:wikipedia": "en:GameStop",
+                        "level": "0",
+                        "name": "GameStop",
+                        "shop": "video_games"
+                      },
+                      "geometry": {
+                        "type": "Point",
+                        "coordinates": [
+                          -6.2617312,
+                          53.3397257
+                        ]
+                      },
+                      "id": "node/6897793437"
+                    },
+                    {
+                      "type": "Feature",
+                      "properties": {
+                        "@id": "node/6937546349",
+                        "shop": "alcohol"
+                      },
+                      "geometry": {
+                        "type": "Point",
+                        "coordinates": [
+                          -6.258882,
+                          53.3626685
+                        ]
+                      },
+                      "id": "node/6937546349"
+                    }
+                  ]
+                };
+
+                var addedGeoJSON = L.geoJSON(geojson, {
+                    style: function(feature)
+                    {
+                        return{
+                            color: '#055'
+                        }
+                    },
+                    pointToLayer: function(geoJsonPoint, latlng)
+                    {
+                        return L.marker(latlng, {
+                            icon: blackIcon
+                        });
+                    },
+                    onEachFeature: function(feature, layer)
+                    {
+                        if(feature.geometry.type === 'Point')
+                        {
+                            layer.bindPopup(feature.properties.name);
+                        }
+
+                    }
+                }).addTo(map);
+
+                map.fitBounds(addedGeoJSON.getBounds(), {
+                    padding: [20,20]
+                });
+
+            }
+
+        </script>
+        {% leaflet_map "gis" callback="window.our_layers" %}
+
+    <h1> Click below to find the shops closest to you:</h1>
+    <a href='nearbyShops'><button>Find the nearest shops near you</button></a>
+    </body>
+
+
+</html>

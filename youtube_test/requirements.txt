@@ -1,0 +1,17 @@
+Click==7.0
+Django==2.2.6
+django-leaflet==0.25.0
+django-progressive-web-app==0.1.1
+gunicorn==19.9.0
+itsdangerous==1.1.0
+Jinja2==2.10.3
+lxml==4.4.1
+MarkupSafe==1.1.1
+Pillow==6.2.1
+postgis==1.0.4
+psycopg2==2.8.4
+psycopg2-binary==2.8.4
+pytz==2019.3
+sqlparse==0.3.0
+Werkzeug==0.16.0
+uwsgi==2.0.18
